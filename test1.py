@@ -1,9 +1,9 @@
 import random
 
 def main():
-    height = 10
-    width = 20
-    wall = "#"
+    height = 20
+    width = 40
+    wall = "█"
     not_visited = "n"
     hall = " "
     prev_locations = []
@@ -12,7 +12,7 @@ def main():
     maze = maze_maker(height, width, wall, not_visited, hall) 
     maze = maze_builder(maze, height, width, wall, not_visited, hall, prev_locations)
         
-    maze = remove_unvisited(maze, height, width)
+    maze = remove_unvisited(maze, height, width, not_visited, wall)
     
     #cut entrance and exit
 
@@ -43,15 +43,15 @@ def maze_maker(height, width, wall, not_visited, hall):
     return maze
 
 
-def remove_unvisited(maze, height, width):
+def remove_unvisited(maze, height, width, not_visited, wall):
     maze_rebuild = []
 
     for a in maze:
         single_list = a
         new_list = []
         for b in single_list:
-            if b == "n":
-                new_list.append("#")
+            if b == not_visited:
+                new_list.append(wall)
             else:
                 new_list.append(b)
         maze_rebuild.append(new_list)
