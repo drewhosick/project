@@ -9,7 +9,9 @@ def main():
     wall = "█"
     not_visited = "n"
     hall = " "
+    player = "Θ"
     prev_locations = []
+
 
     while True:    
         play_game = start_game()
@@ -22,17 +24,16 @@ def main():
         
         
         maze = maze_maker(height, width, wall, not_visited) # Returns blank maze with unvisited squares and a wall all around
-        maze = maze_builder(maze, height, width, wall, not_visited, hall, prev_locations) # Builds maze with walls and corridors
-            
+        maze = maze_builder(maze, height, width, wall, not_visited, hall, prev_locations) # Builds maze with walls and corridors           
         maze = remove_unvisited(maze, not_visited, wall) # Takes out unvisited squares that are leftover after building maze.
+        maze, top, bottom = entrance_exit(maze) # selects a start and end location
+        maze_start = [0,top]
+        maze_finish = [len(maze) - 1, bottom]
+        player_position = [0,top]
+        maze[player_position[0]][player_position[1]] = player
         
-        #cut entrance and exit
 
-        # Print maze as is
-        for c in range(0, len(maze)):
-            for d in range(0, len(maze[c])):
-                print(maze[c][d], end="")
-            print("")  
+        print_maze(maze)
         sys.exit()  
 
 def clear_screen():
@@ -160,6 +161,25 @@ def pick_direction(direction):
     return random.choice(direction)
 
 
+def entrance_exit(maze):
+    while True:
+        top = random.randint(1, len(maze[0]) - 2)
+        if maze[1][top].isspace():
+            maze[0][top] = " "
+            break
+        else:
+            continue
+    while True:
+        bottom = random.randint(1, len(maze[0]) - 2)
+        if maze[len(maze) - 2][bottom].isspace():
+            maze[len(maze) - 1][bottom] = " "
+            break
+        else:
+            continue
+
+    return maze, top, bottom
+
+
 def move(loc_h, loc_v, prev_locations, direction_chosen):
     prev_locations.append([str(loc_h),str(loc_v)])
 
@@ -179,9 +199,11 @@ def move_character(move):
     #moves character in maze
     ...
 
+
 def check_win():
     #check if character is in winning location
     ...
+
 
 def start_game():
     while True:
@@ -199,6 +221,14 @@ def start_game():
                 continue
         except ValueError:
             pass
+
+
+def print_maze(maze): # Print maze as is
+    for c in range(0, len(maze)):
+        for d in range(0, len(maze[c])):
+            print(maze[c][d], end="")
+        print("")
+
 
 if __name__ == "__main__":
     main()
