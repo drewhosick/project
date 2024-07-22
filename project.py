@@ -30,10 +30,11 @@ def main():
         maze_start = [0,top]
         maze_finish = [len(maze) - 1, bottom]
         player_position = [0,top]
+        
         maze[player_position[0]][player_position[1]] = player
         
-
-        print_maze(maze)
+        game_loop(maze, player_position, maze_start, maze_finish, player)
+        
         sys.exit()  
 
 def clear_screen():
@@ -195,9 +196,26 @@ def move(loc_h, loc_v, prev_locations, direction_chosen):
     return loc_h, loc_v, prev_locations, direction_chosen
 
 
-def move_character(move):
+def game_loop(maze, player_position, maze_start, maze_finish, player):
     #moves character in maze
-    ...
+    while True:
+        while True:
+            key_pressed = input('"w - enter)" - UP\n"s - enter" - DOWN\n"a - enter" - LEFT\n"d - enter" - RIGHT').strip().lower()
+            match key_pressed:
+                case "w":
+                    #check if going up is a legal move(not start and not wall)
+                case "s":
+                    #check if going down is a legal move(not wall) and check if win
+                case "a":
+                    #check if going left is a legal move(not wall)
+                case "d":
+                    #check if going right is a legal move(not wall)
+                case _:
+                    continue
+        
+        #stay in loop until check_win return True
+        #call check_win after every move to check if win condition
+    print_maze(maze)
 
 
 def check_win():
