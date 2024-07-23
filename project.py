@@ -200,15 +200,22 @@ def game_loop(maze, player_position, maze_start, maze_finish, player):
     #moves character in maze
     while True:
         while True:
-            key_pressed = input('"w - enter)" - UP\n"s - enter" - DOWN\n"a - enter" - LEFT\n"d - enter" - RIGHT').strip().lower()
+            clear_screen()
+            print_maze(maze)
+            print("\n")
+            key_pressed = input('"Press w - enter" - To Move UP\n"Press s - enter" - To Move DOWN\n"Press a - enter" - To Move LEFT\n"Press d - enter" - TO Move RIGHT\n\nMOVE: ').strip().lower()
             match key_pressed:
                 case "w":
+                    legal = check_legal(maze, player_position, maze_start, maze_finish, player, "w")
                     #check if going up is a legal move(not start and not wall)
                 case "s":
+                    ...
                     #check if going down is a legal move(not wall) and check if win
                 case "a":
+                    ...
                     #check if going left is a legal move(not wall)
                 case "d":
+                    ...
                     #check if going right is a legal move(not wall)
                 case _:
                     continue
@@ -217,6 +224,17 @@ def game_loop(maze, player_position, maze_start, maze_finish, player):
         #call check_win after every move to check if win condition
     print_maze(maze)
 
+
+def check_legal(maze, player_position, maze_start, maze_finish, player, move):
+    if move == "w":
+        if player_position[0] == 0:
+            return False
+        elif player_position[0] == 1 and player_position[1] == maze_start[1]:
+            return False
+        elif maze[player_position[0] - 1][player_position[1]] != " ":
+            return False
+        else:
+            return True
 
 def check_win():
     #check if character is in winning location
