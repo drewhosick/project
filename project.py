@@ -4,8 +4,8 @@ import sys
 import random
 
 def main():
-    height = 20
-    width = 40
+    height = 50
+    width = 80
     wall = "█"
     not_visited = "n"
     hall = " "
@@ -14,12 +14,21 @@ def main():
 
 
     while True:    
-        play_game = start_game()
+        play_game, difficulty = start_game()
         if play_game == False:
             clear_screen()
             f = Figlet(font="bubble", justify="center", width=80)
             print(f.renderText("Thanks for Playing"))
             sys.exit()
+        if difficulty == "easy":
+            height = 10
+            width = 20
+        elif difficulty == "medium":
+            height = 20
+            width = 40
+        elif difficulty == "hard":
+            height = 30
+            width = 60
         clear_screen()
         
         
@@ -317,11 +326,15 @@ def start_game():
         print(f.renderText("Welcome to Mazed"))
         print("\n\n") 
         try:
-            answer = input("What do you want to do?\n\n(1) Start Game\n\n(2) Quit\n\n")
+            answer = input("What do you want to do?\n\n(1) Start Easy Difficulty Game\n\n(2) Start Medium Difficulty Game\n\n(3) Start Hard Difficulty Game\n\n(4) Quit\n\n")
             if answer == "1":
-                return True
-            elif answer == "2":
-                return False
+                return True, "easy"
+            if answer == "2":
+                return True, "medium"
+            if answer == "3":
+                return True, "hard"
+            elif answer == "4":
+                return False, "none"
             else:
                 continue
         except ValueError:
@@ -330,7 +343,7 @@ def start_game():
 
 def print_maze(maze):
     # Print maze as is
-    
+
     for c in range(0, len(maze)):
         for d in range(0, len(maze[c])):
             print(maze[c][d], end="")
