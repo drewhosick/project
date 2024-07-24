@@ -33,9 +33,12 @@ def main():
         
         maze[player_position[0]][player_position[1]] = player
         
-        game_loop(maze, player_position, maze_start, maze_finish, player)
-        
-        sys.exit()  
+        win = game_loop(maze, player_position, maze_start, maze_finish, player, hall)
+        if win == True:
+            clear_screen()
+            g = Figlet(font="bubble", justify="center", width=80)
+            print(g.renderText("You Won\nCongratulations!"))
+            sys.exit() 
 
 def clear_screen():
     return os.system("cls" if os.name=="nt" else "clear")
@@ -196,30 +199,51 @@ def move(loc_h, loc_v, prev_locations, direction_chosen):
     return loc_h, loc_v, prev_locations, direction_chosen
 
 
-def game_loop(maze, player_position, maze_start, maze_finish, player):
+def game_loop(maze, player_position, maze_start, maze_finish, player, hall):
     #moves character in maze
+    legal = None
     while True:
         while True:
+            win = check_win(player_position, maze_finish)
+            if win == True:
+                return True
             clear_screen()
+            print(maze_finish)
+            print(player_position)
             print_maze(maze)
             print("\n")
             key_pressed = input('"Press w - enter" - To Move UP\n"Press s - enter" - To Move DOWN\n"Press a - enter" - To Move LEFT\n"Press d - enter" - TO Move RIGHT\n\nMOVE: ').strip().lower()
             match key_pressed:
                 case "w":
                     legal = check_legal(maze, player_position, maze_start, maze_finish, player, "w")
-                    #check if going up is a legal move(not start and not wall)
+                    if legal == True:
+                        maze[player_position[0]][player_position[1]] = hall
+                        player_position[0] = player_position[0] - 1
+                        maze[player_position[0]][player_position[1]] = player
+                    break
                 case "s":
-                    ...
-                    #check if going down is a legal move(not wall) and check if win
+                    legal = check_legal(maze, player_position, maze_start, maze_finish, player, "s")
+                    if legal == True:
+                        maze[player_position[0]][player_position[1]] = hall
+                        player_position[0] = player_position[0] + 1
+                        maze[player_position[0]][player_position[1]] = player
+                    break
                 case "a":
-                    ...
-                    #check if going left is a legal move(not wall)
+                    legal = check_legal(maze, player_position, maze_start, maze_finish, player, "a")
+                    if legal == True:
+                        maze[player_position[0]][player_position[1]] = hall
+                        player_position[1] = player_position[1] - 1
+                        maze[player_position[0]][player_position[1]] = player
+                    break
                 case "d":
-                    ...
-                    #check if going right is a legal move(not wall)
+                    legal = check_legal(maze, player_position, maze_start, maze_finish, player, "d")
+                    if legal == True:
+                        maze[player_position[0]][player_position[1]] = hall
+                        player_position[1] = player_position[1] + 1
+                        maze[player_position[0]][player_position[1]] = player
+                    break
                 case _:
                     continue
-        
         #stay in loop until check_win return True
         #call check_win after every move to check if win condition
     print_maze(maze)
@@ -235,10 +259,33 @@ def check_legal(maze, player_position, maze_start, maze_finish, player, move):
             return False
         else:
             return True
+    if move == "s":
+        if player_position[0] == len(maze) - 2 and player_position[1] != maze_finish[1]:
+            return False
+        elif maze[player_position[0] + 1][player_position[1]] != " ":
+            return False
+        else:
+            return True
+    if move == "a":
+        if player_position[1] == 1:
+            return False
+        elif maze[player_position[0]][player_position[1] - 1] != " ":
+            return False
+        else:
+            return True
+    if move == "d":
+        if player_position[1] == len(maze[0]) - 2:
+            return False
+        elif maze[player_position[0]][player_position[1] + 1] != " ":
+            return False
+        else:
+            return True
 
-def check_win():
-    #check if character is in winning location
-    ...
+def check_win(player_position, maze_finish):
+    if player_position[0] == maze_finish[0] and player_position[1] == maze_finish[1]:
+        return True
+    else:
+        return False
 
 
 def start_game():
