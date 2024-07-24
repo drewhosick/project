@@ -45,8 +45,8 @@ def clear_screen():
 
 
 def pick_start(height,width):
-    
     # pick a starting square in maze
+    
     loc_h = random.randint(1,height - 2)
     loc_v = random.randint(1,width - 2)
 
@@ -54,6 +54,8 @@ def pick_start(height,width):
 
 
 def maze_maker(height, width, wall, not_visited):
+    #This creates a blank maze with the outer walls and unvisited squares
+
     maze = []
 
     for a in range(0, height):
@@ -74,6 +76,8 @@ def maze_maker(height, width, wall, not_visited):
 
 
 def remove_unvisited(maze, not_visited, wall):
+    #sometimes there's a few univisted squares left.  This turns them into walls after maze is constructed
+
     maze_rebuild = []
 
     for a in maze:
@@ -90,7 +94,7 @@ def remove_unvisited(maze, not_visited, wall):
 
 
 def maze_builder(maze, height, width, wall, not_visited, hall, prev_locations):
-    
+    #Code for creating maze itself
 
     loc_h, loc_v = pick_start(height, width)
     maze = mark_walls(maze, loc_h, loc_v, wall, not_visited, hall)
@@ -116,6 +120,8 @@ def maze_builder(maze, height, width, wall, not_visited, hall, prev_locations):
 
 
 def mark_walls(maze, loc_h, loc_v, wall, not_visited, hall):
+    #creates walls around new hall block
+
     maze[loc_h][loc_v] = hall
     if maze[loc_h + 1][loc_v] != hall:
         maze[loc_h + 1][loc_v] = wall
@@ -129,6 +135,8 @@ def mark_walls(maze, loc_h, loc_v, wall, not_visited, hall):
 
 
 def check_edge(maze, loc_h, loc_v, height, width):
+    #check to make sure we're not near an edge and if we are, remove that as an option so there's no out of range issues and no issues for maze maker
+
     direction = ["up", "down", "left", "right"]
     if loc_h == height - 2:
         direction.remove("down")
@@ -143,6 +151,8 @@ def check_edge(maze, loc_h, loc_v, height, width):
 
 
 def check_visited(maze, loc_h, loc_v, direction):
+    #This makes sure you can't go to a block that's been visited before or through a wall to a block that's been visited.
+    #Leaves only options that work for maze maker
 
     if "up" in direction:
         if maze[loc_h - 2][loc_v] == " " or maze[loc_h - 1][loc_v] == " " or maze[loc_h - 1][loc_v + 1] == " " or maze[loc_h - 1][loc_v - 1] == " ":
@@ -162,10 +172,14 @@ def check_visited(maze, loc_h, loc_v, direction):
 
 
 def pick_direction(direction):
+    #After all invalid directions have been removed, this picks the direction to create new hall piece.
+
     return random.choice(direction)
 
 
 def entrance_exit(maze):
+    #create an entrance at top wall of maze and exit at bottom end.  Also makes sure the adjacent block into maze is not a wall.
+
     while True:
         top = random.randint(1, len(maze[0]) - 2)
         if maze[1][top].isspace():
@@ -185,6 +199,9 @@ def entrance_exit(maze):
 
 
 def move(loc_h, loc_v, prev_locations, direction_chosen):
+    #This actually adjusts the movement to the next block after the direction has been chosen by the map pick direction.
+    #It also appends previous locations to a list so that it can be tracked back if you end up in a dead end.
+
     prev_locations.append([str(loc_h),str(loc_v)])
 
     if direction_chosen == "up":
@@ -200,20 +217,19 @@ def move(loc_h, loc_v, prev_locations, direction_chosen):
 
 
 def game_loop(maze, player_position, maze_start, maze_finish, player, hall):
-    #moves character in maze
+    #This is the game loop after maze has been created.  Once player has decided to start game, this function is called and is the main playing function
     legal = None
+
     while True:
         while True:
             win = check_win(player_position, maze_finish)
-            if win == True:
+            if win == True:     #Checks if the player has arrived on the exit block
                 return True
-            clear_screen()
-            print(maze_finish)
-            print(player_position)
-            print_maze(maze)
+            clear_screen()      #Clears screen after every move made
+            print_maze(maze)    #Prints maze in current format with all positions including player, walls, halls and entrance/exit.
             print("\n")
             key_pressed = input('"Press w - enter" - To Move UP\n"Press s - enter" - To Move DOWN\n"Press a - enter" - To Move LEFT\n"Press d - enter" - TO Move RIGHT\n\nMOVE: ').strip().lower()
-            match key_pressed:
+            match key_pressed:  #Check for move chosen
                 case "w":
                     legal = check_legal(maze, player_position, maze_start, maze_finish, player, "w")
                     if legal == True:
@@ -244,12 +260,13 @@ def game_loop(maze, player_position, maze_start, maze_finish, player, hall):
                     break
                 case _:
                     continue
-        #stay in loop until check_win return True
-        #call check_win after every move to check if win condition
-    print_maze(maze)
+                
+                #stays in loop until check_win return True
 
 
 def check_legal(maze, player_position, maze_start, maze_finish, player, move):
+    #Checks if move chosen by player is legal.  Returns False if it isn't(edge of board, wall, etc) or True if it is
+    
     if move == "w":
         if player_position[0] == 0:
             return False
@@ -281,7 +298,10 @@ def check_legal(maze, player_position, maze_start, maze_finish, player, move):
         else:
             return True
 
+
 def check_win(player_position, maze_finish):
+    #checks if the player's position matches the block for maze exit
+
     if player_position[0] == maze_finish[0] and player_position[1] == maze_finish[1]:
         return True
     else:
@@ -289,6 +309,8 @@ def check_win(player_position, maze_finish):
 
 
 def start_game():
+    #Start Screen.  Player can choose to play or quit
+    
     while True:
         clear_screen()
         f = Figlet(font="epic", justify="center", width=80)
@@ -306,7 +328,9 @@ def start_game():
             pass
 
 
-def print_maze(maze): # Print maze as is
+def print_maze(maze):
+    # Print maze as is
+    
     for c in range(0, len(maze)):
         for d in range(0, len(maze[c])):
             print(maze[c][d], end="")
