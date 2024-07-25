@@ -109,7 +109,7 @@ def maze_builder(maze, height, width, wall, not_visited, hall, prev_locations):
     maze = mark_walls(maze, loc_h, loc_v, wall, not_visited, hall)
 
     while True:
-        direction_choices = check_edge(maze, loc_h, loc_v, height, width)
+        direction_choices = check_edge(loc_h, loc_v, height, width)
         direction_choices = check_visited(maze, loc_h, loc_v, direction_choices)
         if len(direction_choices) != 0:
             direction_chosen = pick_direction(direction_choices)
@@ -143,7 +143,7 @@ def mark_walls(maze, loc_h, loc_v, wall, not_visited, hall):
     return maze
 
 
-def check_edge(maze, loc_h, loc_v, height, width):
+def check_edge(loc_h, loc_v, height, width):
     #check to make sure we're not near an edge and if we are, remove that as an option so there's no out of range issues and no issues for maze maker
 
     direction = ["up", "down", "left", "right"]
